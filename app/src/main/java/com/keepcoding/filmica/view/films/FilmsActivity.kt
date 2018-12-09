@@ -49,6 +49,10 @@ class FilmsActivity : AppCompatActivity(), FilmsFragment.OnItemClickListener, De
 
             true
         }
+
+        if (isTablet()) {
+            showPlaceholderFragment()
+        }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -122,8 +126,18 @@ class FilmsActivity : AppCompatActivity(), FilmsFragment.OnItemClickListener, De
     private fun showDetailsFragment(id: String) {
         val detailsFragment = DetailsFragment.newInstance(id)
 
-        supportFragmentManager.beginTransaction()
+        supportFragmentManager
+            .beginTransaction()
             .replace(R.id.containerDetails, detailsFragment)
+            .commit()
+    }
+
+    private fun showPlaceholderFragment() {
+        val placeholder = PlaceholderFragment()
+
+        supportFragmentManager
+            .beginTransaction()
+            .replace(R.id.containerDetails, placeholder)
             .commit()
     }
 

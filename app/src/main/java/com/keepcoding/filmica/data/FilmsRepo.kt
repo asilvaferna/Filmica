@@ -40,12 +40,8 @@ object FilmsRepo {
         callbackSuccess: ((MutableList<Film>) -> Unit),
         callbackError: ((VolleyError) -> Unit)
     ) {
-
-        if (films.isEmpty()) {
-            requestDiscoverFilms(callbackSuccess, callbackError, context)
-        } else {
-            callbackSuccess.invoke(films)
-        }
+        requestDiscoverFilms(callbackSuccess, callbackError, context)
+        callbackSuccess.invoke(films)
     }
 
     fun trendingFilms(
@@ -53,12 +49,8 @@ object FilmsRepo {
         callbackSuccess: ((MutableList<Film>) -> Unit),
         callbackError: ((VolleyError) -> Unit)
     ) {
-
-        if (films.isEmpty()) {
-            requestTrendingFilms(callbackSuccess, callbackError, context)
-        } else {
-            callbackSuccess.invoke(films)
-        }
+        requestTrendingFilms(callbackSuccess, callbackError, context)
+        callbackSuccess.invoke(films)
     }
 
     fun requestSearchFilms(
