@@ -186,6 +186,7 @@ object FilmsRepo {
         val request = JsonObjectRequest(Request.Method.GET, url, null,
             { response ->
                 val newFilms = Film.parseFilms(response)
+                newFilms.subList(9, newFilms.lastIndex).clear()
                 searchedFilms.addAll(newFilms)
                 callbackSuccess.invoke(searchedFilms)
             },
