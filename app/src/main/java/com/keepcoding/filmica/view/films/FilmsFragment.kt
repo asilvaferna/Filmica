@@ -3,6 +3,8 @@ package com.keepcoding.filmica.view.films
 import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v7.widget.GridLayoutManager
+import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -10,6 +12,7 @@ import android.view.ViewGroup
 import com.keepcoding.filmica.R
 import com.keepcoding.filmica.data.Film
 import com.keepcoding.filmica.data.FilmsRepo
+import com.keepcoding.filmica.view.util.EndlessRecyclerViewScrollListener
 import com.keepcoding.filmica.view.util.ItemOffsetDecoration
 import kotlinx.android.synthetic.main.fragment_films.*
 import kotlinx.android.synthetic.main.layout_error.*
@@ -51,6 +54,8 @@ class FilmsFragment : Fragment() {
         list.adapter = adapter
 
         btnRetry?.setOnClickListener { reload() }
+
+        scrollListener()
     }
 
     override fun onResume() {
@@ -58,8 +63,8 @@ class FilmsFragment : Fragment() {
         this.reload()
     }
 
-    fun reload() {
-        FilmsRepo.discoverFilms(context!!,
+    fun reload(page: Int = 1) {
+        FilmsRepo.discoverFilms(context!!, page,
             { films ->
                 progress?.visibility = View.INVISIBLE
                 layoutError?.visibility = View.INVISIBLE
@@ -73,6 +78,16 @@ class FilmsFragment : Fragment() {
 
                 error.printStackTrace()
             })
+    }
+
+    fun scrollListener() {
+        val layoutManager = list.layoutManager as LinearLayoutManager
+        list.setOnScrollListener(object: EndlessRecyclerViewScrollListener(layoutManager) {
+            override fun onLoadMore(page: Int, totalItemsCount: Int, view: RecyclerView?) {
+                val page = page + 1
+                reload(page)
+            }
+        })
     }
 
     interface OnItemClickListener {

@@ -3,6 +3,7 @@ package com.keepcoding.filmica.view.trending
 import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -11,6 +12,7 @@ import com.keepcoding.filmica.R
 import com.keepcoding.filmica.data.Film
 import com.keepcoding.filmica.data.FilmsRepo
 import com.keepcoding.filmica.view.films.FilmsAdapter
+import com.keepcoding.filmica.view.util.EndlessRecyclerViewScrollListener
 import com.keepcoding.filmica.view.util.ItemOffsetDecoration
 import kotlinx.android.synthetic.main.fragment_films.*
 import kotlinx.android.synthetic.main.layout_error.*
@@ -52,6 +54,8 @@ class TrendingFragment: Fragment() {
         list.adapter = adapter
 
         btnRetry?.setOnClickListener { reload() }
+
+        scrollListener()
     }
 
     override fun onResume() {
@@ -59,13 +63,13 @@ class TrendingFragment: Fragment() {
         this.reload()
     }
 
-    fun reload() {
-        FilmsRepo.trendingFilms(context!!,
+    fun reload(page: Int = 1) {
+        FilmsRepo.trendingFilms(context!!, page,
             { films ->
                 progress?.visibility = View.INVISIBLE
                 layoutError?.visibility = View.INVISIBLE
                 list.visibility = View.VISIBLE
-                adapter.setFilms(films)
+                if (page == 1) adapter.setFilms(films) else adapter.updateFilms(films)
             },
             { error ->
                 progress?.visibility = View.INVISIBLE
@@ -74,6 +78,16 @@ class TrendingFragment: Fragment() {
 
                 error.printStackTrace()
             })
+    }
+
+    fun scrollListener() {
+        val layoutManager = list.layoutManager as LinearLayoutManager
+        list.setOnScrollListener(object: EndlessRecyclerViewScrollListener(layoutManager) {
+            override fun onLoadMore(page: Int, totalItemsCount: Int, view: RecyclerView?) {
+                val page = page + 1
+                reload(page)
+            }
+        })
     }
 
     interface OnItemClickListener {

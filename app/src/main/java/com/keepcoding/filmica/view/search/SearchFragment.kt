@@ -72,7 +72,7 @@ class SearchFragment: Fragment() {
     }
 
     fun requestFilms(query: String) {
-        FilmsRepo.requestSearchFilms(query,
+        FilmsRepo.searchFilms(query,
             { films ->
                 progress?.visibility = View.INVISIBLE
                 layoutError?.visibility = View.INVISIBLE

@@ -49,4 +49,13 @@ open class BaseFilmAdapter<VH : BaseFilmHolder>(
         list.add(film)
         notifyDataSetChanged()
     }
+
+    fun updateFilms(films: MutableList<Film>) {
+        films.forEach { film ->
+            if(!list.contains(film)) {
+                list.add(film)
+            }
+        }
+        notifyItemRangeInserted(list.size, films.size)
+    }
 }
